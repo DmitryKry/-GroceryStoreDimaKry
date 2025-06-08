@@ -16,21 +16,20 @@
         <padding>
             <Insets bottom="0.0" left="0.0" right="20.0" top="0.0"/>
         </padding>
-        <Button text="Добавить" prefWidth="100.0" onAction="#onHelloButtonClick"/>
-        <Button text="Редактировать" prefWidth="100.0" onAction="#onHelloButtonClick"/>
-        <Button text="Удалить" prefWidth="100.0" onAction="#onHelloButtonClick"/>
-    <Region VBox.vgrow="ALWAYS"/>
+        <Button text="Добавить" prefWidth="100.0" onAction="#openAddProductDialog"/>
+        <Button text="Редактировать" prefWidth="100.0"/>
+        <Button text="Удалить" prefWidth="100.0"/>
+        <Region VBox.vgrow="ALWAYS"/>
 
-        <Button text="Выйти" prefWidth="100.0" onAction="#onHelloButtonClick"/>
+        <Button text="Выйти" prefWidth="100.0" onAction="#OnCloseButtonClick"/>
     </VBox>
-
 
     <TableView fx:id="myTable" prefWidth="500.0" prefHeight="400.0">
         <columns>
-            <TableColumn fx:id="productNameColumn" text="Название продукта"/>
-            <TableColumn fx:id="priceColumn" text="Цена"/>
-            <TableColumn fx:id="manufactureDateColumn" text="Дата изготовления"/>
-            <TableColumn fx:id="expiryDateColumn" text="Срок годности"/>
+            <TableColumn fx:id="productNameColumn" text="Название продукта" prefWidth="150"/>
+            <TableColumn fx:id="priceColumn" text="Цена" prefWidth="75"/>
+            <TableColumn fx:id="manufactureDateColumn" text="Дата изготовления" prefWidth="150"/>
+            <TableColumn fx:id="expiryDateColumn" text="Срок годности" prefWidth="120"/>
         </columns>
     </TableView>
 </HBox>
