@@ -82,8 +82,6 @@ public class AddProductController {
         }
     }
 
-
-
     public Product getNewProduct() {
         return newProduct == null ? null : newProduct;
     }

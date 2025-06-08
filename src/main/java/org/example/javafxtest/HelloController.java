@@ -1,4 +1,5 @@
 package org.example.javafxtest;
+import DTO.SQLProductDTO;
 import Models.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -67,7 +68,6 @@ public class HelloController {
             dialogStage.setScene(new Scene(pane, 300, 400));
             dialogStage.showAndWait();
 
-            // Можно получить результат из контроллера addProduct.fxml и добавить в таблицу
             Product newProduct = controller.getNewProduct();
             if (newProduct != null) {
                 myTable.getItems().add(newProduct);
@@ -102,6 +102,7 @@ public class HelloController {
 
     @FXML
     public void OnChangeButtonClick() {
+        SQLProductDTO.disconnect();
         openAddProductDialog();
     }
     @FXML
