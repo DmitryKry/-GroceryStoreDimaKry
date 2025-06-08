@@ -31,4 +31,9 @@ public class ServicePrductImpl implements ServiceProduct {
     public int getProductCount() {
         return SQLProductDTO.getProductCount();
     }
+
+    @Override
+    public List<Product> getProductsByCategory(String category) {
+        return SQLProductDTO.getProductsByCategory(category);
+    }
 }

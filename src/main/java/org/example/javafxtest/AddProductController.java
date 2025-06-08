@@ -10,6 +10,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
+import service.ServiceProduct;
+import service.serviceImpl.ServicePrductImpl;
+
 import java.time.LocalDate;
 
 public class AddProductController {
@@ -25,9 +28,11 @@ public class AddProductController {
     String priceText;
     LocalDate manufactureDate;
     LocalDate expiryDate;
+    boolean updateProduct = false;
 
     public void setProductData(Product product) {
         if (product != null) {
+            updateProduct = true;
             category = product.getProductСategory();
             name = product.getProductName();
             priceText = product.getPrice().toString();
@@ -76,8 +81,12 @@ public class AddProductController {
         else if (manufactureDate == null) ErrorText.setText("Не указана дата изготовления");
         else if (expiryDate == null) ErrorText.setText("Не указан срок годности");
         else {
-            newProduct = new Product(category, name, Double.parseDouble(priceText), manufactureDate, expiryDate);
+            newProduct = new Product(1, category, name, Double.parseDouble(priceText), manufactureDate, expiryDate);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            ServiceProduct serviceProduct = new ServicePrductImpl();
+            if (updateProduct) serviceProduct.updateProduct(newProduct);
+            else serviceProduct.addProduct(newProduct);
+            updateProduct = false;
             stage.close();
         }
     }

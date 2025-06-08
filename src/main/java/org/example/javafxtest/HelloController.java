@@ -13,20 +13,26 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Builder;
+import service.ServiceProduct;
+import service.serviceImpl.ServicePrductImpl;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 public class HelloController {
+    ServiceProduct serviceProduct = new ServicePrductImpl();
+
+    @FXML private ComboBox<String> productCategoryComboBox;
+
+    @FXML
+    private Label CountProducts;
 
     @FXML
     private TableColumn<Product, String> productCategoryColumn;
 
     @FXML
     private TableColumn<Product, String> productNameColumn;
-
-    @FXML
-    private ObservableList<Product> products;
 
     @FXML
     private TableColumn<Product, Double> priceColumn;
@@ -38,12 +44,39 @@ public class HelloController {
     private TableColumn<Product, LocalDate> expiryDateColumn;
 
     @FXML
-    public void OnCloseButtonClick() {
-        Platform.exit();
-    }
+    private TableView<Product> myTable;
 
     @FXML
-    private TableView<Product> myTable;
+    public void initialize() {
+        productCategoryComboBox.getItems().addAll(
+                "Все",
+                "Молочные продукты",
+                "Хлебобулочные изделия",
+                "Мясные продукты",
+                "Напитки",
+                "Фрукты и овощи",
+                "Замороженные продукты",
+                "Кондитерские изделия",
+                "Бакалея",
+                "Замороженные продукты",
+                "Полуфабрикаты"
+        );
+        // Можно установить значение по умолчанию
+        productCategoryComboBox.getSelectionModel().selectFirst();
+        // Загружаем данные из сервиса
+        List<Product> productList = serviceProduct.getAllProducts();
+        ObservableList<Product> products = FXCollections.observableArrayList(productList);
+        // Устанавливаем данные в TableView
+        myTable.setItems(products);
+        CountProducts.setText("Кол-во товара: " + String.valueOf(serviceProduct.getProductCount()));
+
+        // Настраиваем колонки
+        productCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("productСategory"));
+        productNameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+        manufactureDateColumn.setCellValueFactory(new PropertyValueFactory<>("manufactureDate"));
+        expiryDateColumn.setCellValueFactory(new PropertyValueFactory<>("expiryDate"));
+    }
 
     @FXML
     private void openAddProductDialog() {
@@ -73,42 +106,49 @@ public class HelloController {
                 myTable.getItems().add(newProduct);
             }
 
+            List<Product> productList = serviceProduct.getAllProducts();
+            ObservableList<Product> products = FXCollections.observableArrayList(productList);
+            CountProducts.setText("Кол-во товара: " + String.valueOf(serviceProduct.getProductCount()));
+            // Устанавливаем данные в TableView
+            myTable.setItems(products);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
     @FXML
-    public void initialize() {
-        productCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("productСategory"));
-        productNameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-        manufactureDateColumn.setCellValueFactory(new PropertyValueFactory<>("manufactureDate"));
-        expiryDateColumn.setCellValueFactory(new PropertyValueFactory<>("expiryDate"));
-
-        Product milk = new Product("Молочные продукты", "Молоко", 60.0, LocalDate.of(2025,6,1), LocalDate.of(2025,6,10));
-        System.out.println(milk.getId());  // 1
-
-        Product bread = new Product("Хлебобулочные изделия", "Хлеб", 30.0, LocalDate.of(2025,6,5), LocalDate.of(2025,6,8));
-        System.out.println(bread.getId());  // 2
-
-        // Создаём начальный список продуктов
-        products = FXCollections.observableArrayList(milk, bread);
-
-        // Передаём список в таблицу
-        myTable.setItems(products);
+    public void OnCloseButtonClick() {
+        SQLProductDTO.disconnect();
+        Platform.exit();
     }
 
     @FXML
     public void OnChangeButtonClick() {
-        SQLProductDTO.disconnect();
         openAddProductDialog();
     }
     @FXML
     public void OnDeleteButtonClick() {
-        int selectedIndex = myTable.getSelectionModel()
-                .getSelectedIndex();
-        myTable.getItems().remove(selectedIndex);
+        serviceProduct.deleteProductById(myTable.getSelectionModel().getSelectedItem().getId());
+        List<Product> productList = serviceProduct.getAllProducts();
+        ObservableList<Product> products = FXCollections.observableArrayList(productList);
+        CountProducts.setText("Кол-во товара: " + String.valueOf(serviceProduct.getProductCount()));
+        myTable.setItems(products);
+    }
+
+    @FXML
+    public void OnEditButtonClick() {
+        String category = productCategoryComboBox.getSelectionModel().getSelectedItem();
+        if (!category.equals("Все")){
+            List<Product> productList = serviceProduct.getProductsByCategory(category);
+            ObservableList<Product> products = FXCollections.observableArrayList(productList);
+            CountProducts.setText("Кол-во товара: " + String.valueOf(productList.size()));
+            myTable.setItems(products);
+        } else {
+            List<Product> productList = serviceProduct.getAllProducts();
+            ObservableList<Product> products = FXCollections.observableArrayList(productList);
+            CountProducts.setText("Кол-во товара: " + String.valueOf(serviceProduct.getProductCount()));
+            myTable.setItems(products);
+        }
     }
 }

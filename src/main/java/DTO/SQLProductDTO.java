@@ -70,7 +70,7 @@ public class SQLProductDTO {
         String sql = "UPDATE products SET product_category = ?, product_name = ?, price = ?, manufacture_date = ?, expiry_date = ? WHERE id = ?";
 
         try {
-            PreparedStatement stmt = connection.prepareStatement(sql)
+            PreparedStatement stmt = connection.prepareStatement(sql);
 
             stmt.setString(1, product.getProductСategory());
             stmt.setString(2, product.getProductName());
@@ -136,6 +136,33 @@ public class SQLProductDTO {
         }
 
         return 0;
+    }
+
+    public static List<Product> getProductsByCategory(String category) {
+        List<Product> products = new ArrayList<>();
+        String sql = "SELECT * FROM products WHERE product_category = ?"; // Используй имя столбца из БД
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, category); // Устанавливаем значение параметра
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                long id = rs.getLong("id");
+                String cat = rs.getString("product_category");
+                String name = rs.getString("product_name");
+                double price = rs.getDouble("price");
+                LocalDate manufactureDate = rs.getDate("manufacture_date").toLocalDate();
+                LocalDate expiryDate = rs.getDate("expiry_date").toLocalDate();
+
+                Product product = new Product(id, cat, name, price, manufactureDate, expiryDate);
+                products.add(product);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return products;
     }
 
     public static void disconnect() {

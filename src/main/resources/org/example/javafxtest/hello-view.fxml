@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.ComboBox?>
 <HBox alignment="TOP_LEFT" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.example.javafxtest.HelloController">
 
@@ -19,8 +20,10 @@
         <Button text="Добавить" prefWidth="100.0" onAction="#openAddProductDialog"/>
         <Button text="Редактировать" prefWidth="100.0" onAction="#OnChangeButtonClick"/>
         <Button text="Удалить" prefWidth="100.0" onAction="#OnDeleteButtonClick"/>
+        <Label fx:id="CountProducts"/>
+        <ComboBox fx:id="productCategoryComboBox" prefWidth="100.0"/>
+        <Button text="Отфильтровать" prefWidth="100.0" onAction="#OnEditButtonClick"/>
         <Region VBox.vgrow="ALWAYS"/>
-
         <Button text="Выйти" prefWidth="100.0" onAction="#OnCloseButtonClick"/>
     </VBox>
 

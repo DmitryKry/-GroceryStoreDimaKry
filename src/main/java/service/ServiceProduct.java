@@ -10,4 +10,5 @@ public interface ServiceProduct {
     Boolean updateProduct(Product product);
     List<Product> getAllProducts();
     int getProductCount();
+    List<Product> getProductsByCategory(String category);
 }
