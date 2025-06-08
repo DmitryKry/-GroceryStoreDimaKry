@@ -6,20 +6,20 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.control.TextField;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Button;
+import lombok.Builder;
+
 import java.io.IOException;
 import java.time.LocalDate;
 
 public class HelloController {
+
+    @FXML
+    private TableColumn<Product, String> productCategoryColumn;
 
     @FXML
     private TableColumn<Product, String> productNameColumn;
@@ -36,7 +36,6 @@ public class HelloController {
     @FXML
     private TableColumn<Product, LocalDate> expiryDateColumn;
 
-
     @FXML
     public void OnCloseButtonClick() {
         Platform.exit();
@@ -51,15 +50,24 @@ public class HelloController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addProduct.fxml"));
             AnchorPane pane = loader.load();
 
+            AddProductController controller = loader.getController();
+
+            // Получаем выбранный продукт из таблицы
+            Product selectedProduct = myTable.getSelectionModel().getSelectedItem();
+            if (selectedProduct != null) {
+                controller.setProductData(selectedProduct);
+                myTable.getItems().remove(myTable.getSelectionModel()
+                        .getSelectedIndex());
+            }
+
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Добавить продукт");
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(myTable.getScene().getWindow()); // родительское окно
-            dialogStage.setScene(new Scene(pane, 200, 200));
+            dialogStage.setScene(new Scene(pane, 300, 400));
             dialogStage.showAndWait();
 
             // Можно получить результат из контроллера addProduct.fxml и добавить в таблицу
-            AddProductController controller = loader.getController();
             Product newProduct = controller.getNewProduct();
             if (newProduct != null) {
                 myTable.getItems().add(newProduct);
@@ -70,9 +78,10 @@ public class HelloController {
         }
     }
 
+
     @FXML
     public void initialize() {
-        // Привязка колонок к свойствам модели
+        productCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("productСategory"));
         productNameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         manufactureDateColumn.setCellValueFactory(new PropertyValueFactory<>("manufactureDate"));
@@ -91,4 +100,14 @@ public class HelloController {
         myTable.setItems(products);
     }
 
+    @FXML
+    public void OnChangeButtonClick() {
+        openAddProductDialog();
+    }
+    @FXML
+    public void OnDeleteButtonClick() {
+        int selectedIndex = myTable.getSelectionModel()
+                .getSelectedIndex();
+        myTable.getItems().remove(selectedIndex);
+    }
 }

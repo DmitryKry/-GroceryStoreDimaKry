@@ -6,7 +6,7 @@ import java.time.LocalDate;
 @Data
 public class Product  {
     private long id;
-    private final String category;
+    private final String productСategory;
     private final String productName;
     private final Double price;
     private final LocalDate manufactureDate;
@@ -14,7 +14,7 @@ public class Product  {
     private static long countProducts = 0;
     public Product(String category, String productName, Double price, LocalDate manufactureDate, LocalDate expiryDate) {
         this.id = ++countProducts;  // автоматически присваиваем id
-        this.category = category;
+        this.productСategory = category;
         this.productName = productName;
         this.price = price;
         this.manufactureDate = manufactureDate;
